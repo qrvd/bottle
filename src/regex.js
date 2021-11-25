@@ -1,13 +1,13 @@
 
-function escape(str) {
+function regexEscape(str) {
   return str.replace(/(?=\W)/g, '\\')
 }
 
 function wholeWord(str, options = '') {
-  return new RegExp('\\b' + Escape(str) + '\\b', options)
+  return new RegExp('\\b' + regexEscape(str) + '\\b', options)
 }
 
 module.exports = {
-  escape: escape,
+  escape: regexEscape,
   wholeWord: wholeWord,
 }
