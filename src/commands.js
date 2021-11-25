@@ -1,7 +1,9 @@
 const child_process = require('child_process');
 const regex = require('./regex.js');
+
 const fs = require('fs');
-const isAtHome = fs.existsSync('./bottle.json');
+const { PATH } = require('./settings.js');
+const isAtHome = fs.existsSync(PATH);
 
 function getCommandPath(cmd) {
   // todo: safer concat
