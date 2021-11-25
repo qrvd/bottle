@@ -1,36 +1,56 @@
 const child_process = require('child_process');
 const process = require('process');
+const { Mutex } = reqiure('async-mutex');
 
 module.exports = {
   execCommand: execCommand
 };
 
-function execCommand(cmd, cmdUser) {
-  const promise = new Promise((resolve, reject) => {  
-    // spawn the command
-    const cmdargs = cmd.args;
-    const proc = child_process.execFile(
-      getCommandPath(cmd),
-      cmdargs,
-      { env: createCommandEnv(process.env, cmdUser),
-        stdio: 'pipe', windowsHide: true },
-      (error, stdout, stderr) => {
-        // note: what if they never stop?
-        // note: exit code on close/error?
-        // note: stdin?
-        if (stderr.length) {
-          console.error(stderr);
-        }
-        if (error) {
-          console.error(error);
-          reject(stderr);
-        } else {
-          resolve(stdout);
-        }
+async function execCommand(cmd, cmdUser) {
+  const userMutex = await getUserMutex(cmdUser);
+  return await userMutex.runExclusive(() => await execCommandHelper(cmd, cmdUser));
+}
+
+function execCommandHelper(cmd, cmdUser) {
+  const path = getCommandPath(cmd);
+  const options = {
+    env: createCommandEnv(process.env, cmdUser),
+    stdio: 'pipe',
+    windowsHide: true
+  }; 
+  return new Promise((resolve, reject) => {
+    child_process.execFile(path, cmd.args, options, (error, stdout, stderr) => {
+      // note: what if they never stop?
+      // note: exit code on close/error?
+      // note: stdin?
+      if (stderr.length) {
+        console.error(stderr);
       }
-    );
+      if (error) {
+        console.error(error);
+        reject(stderr);
+      } else {
+        resolve(stdout);
+      }
+    });
   });
-  return promise;
+}
+
+const globalMut = new Mutex();
+const cmdMutexes = {};
+
+async function getUserMutex(cmdUser) {
+  var userMutex = cmdMutexes[cmdUser.id];
+  if (!userMutex) {
+    userMutex = await globalMut.runExclusive(() => {
+      // check again (in case of race condition)
+      if (!cmdMutexes[cmdUser.id]) {
+        cmdMutexes[cmdUser.id] = new Mutex();
+      }
+      return cmdMutexes[cmdUser.id];
+    });
+  }
+  return userMutex;
 }
 
 function createCommandEnv(originalEnv, cmdUser) {
