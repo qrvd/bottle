@@ -86,7 +86,7 @@ async function triggerCommand(msg, settings) {
   await msg.reply(output);
 }
 
-function inject(client) {
+function inject(client, settings) {
   client.on('messageCreate', async (msg) => {
     if (msg.author.id === client.user.id) {
     } else if (isCommand(msg, settings)) {

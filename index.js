@@ -18,7 +18,7 @@ client.once('ready', async () => {
   console.error(`Logged in as ${client.user.username}!`);
   await userdata.init(client);
   // Start handling messages, now that the bot is ready
-  commands.inject(client);
+  commands.inject(client, settings);
 });
 
 client.login(settings.token);
