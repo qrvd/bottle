@@ -10,7 +10,7 @@ async function init(clientUser) {
   }
   // safer than running the python code
   // todo: keep in sync with bottle_lib.lib.init_bot
-  var botUser = createBotUser(clientUser);
+  var botUser = buildBotUser(clientUser);
   if (fs.existsSync('users/bot.json')) {
     botUser = Object.assign(
       JSON.parse(fs.readFileSync('users/bot.json')), botUser);
@@ -18,8 +18,8 @@ async function init(clientUser) {
   fs.writeFileSync('users/bot.json', JSON.stringify(botUser, null, 4));
 }
 
-function createBotUser(client) {
-  const u = client.user;
+function buildBotUser(clientUser) {
+  const u = clientUser;
   const botUser = {
     me: true,
     id: u.id,
@@ -29,7 +29,18 @@ function createBotUser(client) {
   return botUser;
 }
 
+function buildCommandUser(discordUser) {
+  const u = discordUser;
+  const cmdUser = {
+    id: u.id,
+    name: u.username,
+    tag: `${u.username}#${u.discriminator}`
+  };
+  return cmdUser;
+}
+
 module.exports = {
-  init: init
+  init: init,
+  buildCommandUser: buildCommandUser
 };
 
