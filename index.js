@@ -12,8 +12,7 @@ const client = new discord.Client({
 
 client.once('ready', async () => {
   console.error(`Logged in as ${client.user.username}!`);
-  await userdata.init(client);
-  // Start handling messages, now that the bot is ready
+  await userdata.init(client.user);
   commands.inject(client, settings.get());
 });
 
