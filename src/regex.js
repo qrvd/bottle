@@ -1,5 +1,5 @@
 
-function Escape(str) {
+function escape(str) {
   return str.replace(/(?=\W)/g, '\\')
 }
 
@@ -8,6 +8,6 @@ function wholeWord(str, options = '') {
 }
 
 module.exports = {
-  escape: Escape,
+  escape: escape,
   wholeWord: wholeWord,
 }
