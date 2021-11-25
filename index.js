@@ -15,29 +15,21 @@ const client = new discord.Client({
   partials: ["CHANNEL"]
 });
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.error(`Logged in as ${client.user.username}!`);
+  await initBot(client);
 
-  // Create bot user!
-  // bottle_lib.init_bot(client.user.id,
-  //   client.user.name + '#' + client.user.discriminator)
-});
+  // Start handling messages, now that the bot is ready
+  // todo: lock handlers so that only one per user is running at a time
+  client.on('messageCreate', async (msg) => {
+    if (msg.author.id === client.user.id) {
+    } else if (isCommand(msg, settings)) {
+      await triggerCommand(msg, settings);
+    } else {
+      // Non-command?
+    }
+  });
 
-// todo: lock handlers so that only one per user is running at a time
-
-client.on('messageCreate', async (msg) => {
-  const botId = client.user.id;
-  console.error('go');
-  if (msg.author.id === botId) {
-  } else if (isCommand(msg, settings)) {
-    console.error('trigger');
-    console.error(msg.content);
-    await triggerCommand(msg, settings);
-  } else {
-    console.error(settings.prefix);
-    console.error(msg.content);
-    // Non-command?
-  }
 });
 
 async function triggerCommand(msg, settings) {
@@ -120,6 +112,31 @@ function isCommand(msg, settings) {
   return prefix
     && msg.content.startsWith(prefix)
     && msg.content !== prefix;
+}
+
+async function initBot(client) {
+  if (!fs.existsSync('users/')) {
+    fs.mkdirSync('users');
+  }
+  // safer than running the python code
+  // todo: keep in sync with bottle_lib.lib.init_bot
+  var botUser = createBotProfile(client);
+  if (fs.existsSync('users/bot.json')) {
+    botUser = Object.assign(
+      JSON.parse(fs.readFileSync('users/bot.json')), botUser);
+  }
+  fs.writeFileSync('users/bot.json', JSON.stringify(botUser, null, 4));
+}
+
+function createBotProfile(client) {
+  const u = client.user;
+  const botUser = {
+    me: true,
+    id: u.id,
+    name: u.username,
+    tag: `${u.username}#${u.discriminator}`
+  };
+  return botUser;
 }
 
 client.login(settings.token);
