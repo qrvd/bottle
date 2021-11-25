@@ -14,11 +14,16 @@ def get_home_path():
     # going up the path, find the first directory that has the file bottle.json
     global _home_path
     if _home_path is None:
-        for curdir in enumerate_dirs(path.curdir):
-            target = path.join(curdir, 'bottle.json')
-            if path.exists(target):
-                _home_path = curdir
-                return curdir
+        h = environ.get('BOTTLE_HOME_PATH')
+        if h:
+            _home_path = h
+        else:
+            for curdir in enumerate_dirs(path.curdir):
+                target = path.join(curdir, 'bottle.json')
+                if path.exists(target):
+                    _home_path = curdir
+                    return curdir
+    if not _home_path:
         raise RuntimeError('No home found')
     return _home_path
 

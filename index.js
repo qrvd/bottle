@@ -1,7 +1,7 @@
 const fs = require('fs');
 const process = require('process');
 const discord = require('discord.js');
-const command = require('./src/command.js');
+const commands = require('./src/commands.js');
 const userdata = require('./src/userdata.js');
 
 const settings = JSON.parse(fs.readFileSync('./bottle.json'));

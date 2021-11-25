@@ -1,5 +1,7 @@
 const child_process = require('child_process');
-const regex = require('./src/regex.js');
+const regex = require('./regex.js');
+const fs = require('fs');
+const isAtHome = fs.existsSync('./bottle.json');
 
 function getCommandPath(cmd) {
   // todo: safer concat
@@ -12,8 +14,12 @@ function getCommandPath(cmd) {
 
 function createCommandEnv(originalEnv, msg) {
   const childenv = Object.assign({}, originalEnv);
-  childenv.BOTTLE_USER_ID = msg.author.id;
-  childenv.BOTTLE_USER_TAG = `${msg.author.username}#${msg.author.discriminator}`;
+  const auth = msg.author;
+  childenv.BOTTLE_USER_ID = auth.id;
+  childenv.BOTTLE_USER_TAG = `${auth.username}#${auth.discriminator}`;
+  if (isAtHome) {
+    childenv.BOTTLE_HOME_PATH = '.';
+  }
   return childenv;
 }
 
