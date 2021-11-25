@@ -28,9 +28,11 @@ function isCommand(msg, settings) {
 async function triggerCommand(msg, settings) {
   const cmd = parseCommand(msg, settings);
   const cmdUser = userdata.buildCommandUser(msg.author);
-  const output = await subprocess.execCommand(cmd, cmdUser);
-  // todo: not reply?
-  await msg.reply(output);
+  const output = (await subprocess.execCommand(cmd, cmdUser)).trim();
+  if (output.length > 0) {
+    // todo: not reply?
+    await msg.reply(output);
+  }
 }
 
 function inject(client, settings) {
