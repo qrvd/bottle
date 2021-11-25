@@ -1,9 +1,7 @@
-const fs = require('fs');
-const process = require('process');
-const discord = require('discord.js');
 const commands = require('./src/commands.js');
 const userdata = require('./src/userdata.js');
 const settings = require('./src/settings.js');
+const discord = require('discord.js');
 
 const client = new discord.Client({
   intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"],
