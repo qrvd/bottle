@@ -118,6 +118,10 @@ async function initBot(client) {
   if (!fs.existsSync('users/')) {
     fs.mkdirSync('users');
   }
+  if (!fs.existsSync('commands/')) {
+    fs.mkdirSync('commands');
+    fs.writeFileSync('commands/hello', 'console.log("Hello world!")\n');
+  }
   // safer than running the python code
   // todo: keep in sync with bottle_lib.lib.init_bot
   var botUser = createBotProfile(client);
