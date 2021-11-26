@@ -2,9 +2,12 @@ import json
 
 class BunchDict(dict):
     
-    def __init__(self,**kw):
-        dict.__init__(self,kw)
-        self.__dict__.update(kw)
+    def __init__(self, other=None):
+        if other:
+            dict.__init__(self, other)
+            self.__dict__.update(other)
+        else:
+            dict.__init__(self)
 
     def __setattr__(self, name, val):
         self[name] = val

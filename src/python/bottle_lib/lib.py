@@ -37,12 +37,11 @@ def get_user_path(uid):
 def open_user_file(uid, mode='r'):
     return open(get_user_path(uid), mode)
 
-def new_user(uid, user):
+def new_user(uid):
     user = {'id': uid}
     if path.exists(get_user_path('default')):
-        defuser = get_user('default')
-        defuser.update(user)
-        user = defuser
+        with open(get_user_path('default')) as f:
+            user = json.load(f).update(user)
     return BunchDict(user)
 
 def dereference_uid(uid_ref):
