@@ -14,5 +14,8 @@ client.once('ready', async () => {
   commands.inject(client, settings.get());
 });
 
-client.login(settings.get().token);
+settings.ensureSettingsExist().then(() => {
+  console.error('Starting bot...');
+  client.login(settings.get().token);
+});
 
