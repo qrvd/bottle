@@ -79,8 +79,6 @@ which can be done simply once you have the user's Discord ID.
 ~:$ export BOTTLE_USER_ID=12345678910 
 ~:$ python balance.py
 Your balance is: 0
-~:$ python balance.py
-Your balance is: 1
 
 # Return to using the bot's "user":
 ~:$ export BOTTLE_USER_ID=bot
@@ -95,8 +93,6 @@ Your balance is: 2
 ~:$ set BOTTLE_USER_ID=12345678910
 ~:$ python balance.py 
 Your balance is: 0
-~:$ python balance.py
-Your balance is: 1
 
 :: Return to using the bot's "user":
 ~:$ set BOTTLE_USER_ID=bot
