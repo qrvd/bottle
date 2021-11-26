@@ -54,3 +54,17 @@ If you use the Python library, all changes to the "user" object will be automati
 and kept for the next time the user runs any other command. That is why the above code is
 all that's needed.
 
+### Development tips
+
+You can run your commands directly from the command-line,
+which allows for much easier testing/development! Here is an example
+of how to run the `balance` command from the command-line:
+
+```bash
+~:$ cd commands
+~:$ python balance.py
+Your balance is: 0
+~:$ python balance.py
+Your balance is: 1
+```
+
