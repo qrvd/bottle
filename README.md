@@ -34,7 +34,7 @@ finishes running.
 
 Your users' data are stored as simple JSON files, in the `users/` folder.
 Commands can bd written in any programming language, but feel free to use
-the included Python library (found in `src/python`).
+the included Python library as seen in the example commands (`bot/commands`).
 
 It allows you to write very simple code. Here is the code for a simple "balance" command:
 
