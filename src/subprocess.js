@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const { PATH } = require('./settings.js');
 const isAtHome = fs.existsSync(PATH);
+const fg = require('fast-glob');
+
+const COMMANDS_PATH = path.resolve(path.join('.', 'commands'));
 
 module.exports = {
   execCommand: execCommand
@@ -18,15 +21,15 @@ async function execCommand(cmd, cmdUser) {
   });
 }
 
-function execCommandHelper(cmd, cmdUser) {
-  const path = getCommandPath(cmd);
+async function execCommandHelper(cmd, cmdUser) {
+  const commandPath = await getCommandPath(cmd);
   const options = {
     env: createCommandEnv(process.env, cmdUser),
     stdio: 'pipe',
     windowsHide: true
   }; 
   return new Promise((resolve, reject) => {
-    child_process.execFile(path, cmd.args, options, (error, stdout, stderr) => {
+    child_process.execFile(commandPath, cmd.args, options, (error, stdout, stderr) => {
       // note: what if they never stop?
       // note: exit code on close/error?
       // note: stdin?
