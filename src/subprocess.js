@@ -52,7 +52,8 @@ async function execCommandHelper(cmd, cmdUser) {
     const options = {
       env: createCommandEnv(process.env, cmdUser),
       stdio: 'pipe',
-      windowsHide: true
+      windowsHide: true,
+      cwd: path.dirname(commandPath)
     };
     if (stat.isDirectory()) {
       fs.readFile(path.join(commandPath, 'command.json'), (err, bytes) => {
@@ -118,6 +119,9 @@ function validateBasename(name) {
   // todo: OS-specific
   if (['.', '..'].includes(name) || name.includes(path.delimiter)) {
     throw "Invalid command name! (Dangerous)";
+  }
+  if (['bottle', 'bottle_lib'].includes(name)) {
+    throw "Invalid command name! (Reserved)";
   }
   // note: command names can include spaces (shop buy, shop sell, ...)
 }
