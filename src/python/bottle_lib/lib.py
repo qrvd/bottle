@@ -1,3 +1,4 @@
+import sys
 import os
 from os import path
 from os import environ
@@ -40,8 +41,9 @@ def open_user_file(uid, mode='r'):
 def new_user(uid):
     user = {'id': uid}
     if path.exists(get_user_path('default')):
-        with open(get_user_path('default')) as f:
-            user = json.load(f).update(user)
+        dflt = dict(get_user('default'))
+        dflt.update(user)
+        user = dflt
     return BunchDict(user)
 
 def dereference_uid(uid_ref):
@@ -61,9 +63,11 @@ def get_user(uid_ref):
         # Otherwise, load from existing data
         with open_user_file(uid) as f:
             user_dict = json.load(f)
-        if path.exists(get_user_path('default')):
+        if uid != 'default' and path.exists(get_user_path('default')):
             with open(get_user_path('default')) as f:
-                user_dict = json.load(f).update(user_dict)
+                dflt = dict(get_user('default'))
+                dflt.update(user_dict)
+                user_dict = dflt
         return BunchDict(user_dict)
 
 def save_user(user):
@@ -87,6 +91,9 @@ def get_current_user():
     user = get_user(get_current_user_id())
     if 'tag' not in user:
         if uid == DEFAULT_UID:
+            print(uid, file=sys.stderr)
+            print(_home_path, file=sys.stderr)
+            print(json.dumps(user), file=sys.stderr)
             raise RuntimeError('bot user has no tag set! (was the bot user initialized?)')
         elif 'BOTTLE_USER_TAG' not in os.environ:
             raise RuntimeError('BOTTLE_USER_TAG undefined')
