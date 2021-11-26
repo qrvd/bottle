@@ -91,9 +91,6 @@ def get_current_user():
     user = get_user(get_current_user_id())
     if 'tag' not in user:
         if uid == DEFAULT_UID:
-            print(uid, file=sys.stderr)
-            print(_home_path, file=sys.stderr)
-            print(json.dumps(user), file=sys.stderr)
             raise RuntimeError('bot user has no tag set! (was the bot user initialized?)')
         elif 'BOTTLE_USER_TAG' not in os.environ:
             raise RuntimeError('BOTTLE_USER_TAG undefined')
