@@ -2,13 +2,19 @@ const child_process = require('child_process');
 const process = require('process');
 const { getUserMutex } = require('./usermutex.js');
 
+const fs = require('fs');
+const { PATH } = require('./settings.js');
+const isAtHome = fs.existsSync(PATH);
+
 module.exports = {
   execCommand: execCommand
 };
 
 async function execCommand(cmd, cmdUser) {
   const userMutex = await getUserMutex(cmdUser);
-  return await userMutex.runExclusive(() => await execCommandHelper(cmd, cmdUser));
+  return await userMutex.runExclusive(async () => {
+    return await execCommandHelper(cmd, cmdUser)
+  });
 }
 
 function execCommandHelper(cmd, cmdUser) {

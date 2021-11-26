@@ -2,10 +2,6 @@ const subprocess = require('./subprocess.js');
 const userdata = require('./userdata.js');
 const regex = require('./regex.js');
 
-const fs = require('fs');
-const { PATH } = require('./settings.js');
-const isAtHome = fs.existsSync(PATH);
-
 function parseCommand(msg, settings) {
   const cleanText = getCleanText(msg, settings);
   const [name, ...args] = cleanText.split(/\s+/);
