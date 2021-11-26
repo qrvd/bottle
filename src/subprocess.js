@@ -3,6 +3,7 @@ const process = require('process');
 const { getUserMutex } = require('./usermutex.js');
 
 const fs = require('fs');
+const path = require('path');
 const { PATH } = require('./settings.js');
 const isAtHome = fs.existsSync(PATH);
 
@@ -52,18 +53,36 @@ function createCommandEnv(originalEnv, cmdUser) {
   return childenv;
 }
 
-function getCommandPath(cmd) {
-  // todo: safer concat
+async function getCommandPath(cmd) {
   // note: commands could also contain any symbols, if replaced by UUIDs or something
   validateBasename(cmd.name);
-  const path = `commands/${cmd.name}`;
-  return path;
+  const p = path.toNamespacedPath(
+    path.resolve(fg.escapePath(path.join(COMMANDS_PATH, cmd.name)))
+  );
+  if (path.dirname(p) !== COMMANDS_PATH) {
+    throw "Error: Malicious command name";
+  }
+  return await resolveCommandPath(p);
+}
+
+async function resolveCommandPath(p) {
+  // Resolve any ambiguity
+  const entries = await fg([p, p + '.*']);
+  if (entries.length === 0) {
+    throw "No such command";
+  } else if (entries.length > 1) {
+    if (entries.includes(p)) {
+      return p;
+    }
+    throw "Error! There are multiple commands with this name!"
+  }
+  return entries[0];
 }
 
 // todo: "parse, don't validate"
 function validateBasename(name) {
   // todo: OS-specific
-  if (['.', '..'].includes(name) || name.includes('/') || name.includes('\\')) {
+  if (['.', '..'].includes(name) || name.includes(path.delimiter)) {
     throw "Invalid command name! (Dangerous)";
   }
   // note: command names can include spaces (shop buy, shop sell, ...)
