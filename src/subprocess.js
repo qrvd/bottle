@@ -1,6 +1,7 @@
 const child_process = require('child_process');
 const process = require('process');
 const { getUserMutex } = require('./usermutex.js');
+const shellescape = require('shell-escape');
 
 const fs = require('fs');
 const path = require('path');
@@ -21,15 +22,19 @@ async function execCommand(cmd, cmdUser) {
   });
 }
 
+function asyncStat(...args) {
+  return new Promise((resolve, reject) => {
+    fs.stat(...args, (err, stat) => {
+      if (err) reject(err); else resolve(stat);
+    })
+  });
+}
+
 async function execCommandHelper(cmd, cmdUser) {
   const commandPath = await getCommandPath(cmd);
-  const options = {
-    env: createCommandEnv(process.env, cmdUser),
-    stdio: 'pipe',
-    windowsHide: true
-  }; 
+  const stat = await asyncStat(commandPath);
   return new Promise((resolve, reject) => {
-    child_process.execFile(commandPath, cmd.args, options, (error, stdout, stderr) => {
+    const onExit = (error, stdout, stderr) => {
       // note: what if they never stop?
       // note: exit code on close/error?
       // note: stdin?
@@ -42,7 +47,33 @@ async function execCommandHelper(cmd, cmdUser) {
       } else {
         resolve(stdout);
       }
-    });
+    };
+    const env = createCommandEnv(process.env, cmdUser);
+    const options = {
+      env: createCommandEnv(process.env, cmdUser),
+      stdio: 'pipe',
+      windowsHide: true
+    };
+    if (stat.isDirectory()) {
+      fs.readFile(path.join(commandPath, 'command.json'), (err, bytes) => {
+        if (err) {
+          reject(err);
+        } else {
+          const json = JSON.parse(bytes);
+          const cmdline = json?.run;
+          if (!json) {
+            reject(new Error("command.json contains invalid JSON!"));
+          } else if (!cmdline) {
+            reject(new Error("command.json does not have a \"run\" field!"));
+          } else {
+            child_process.exec(cmdline + ' ' + shellescape(cmd.args), 
+              Object.assign({cwd: commandPath}, options), onExit);
+          }
+        }
+      });
+    } else {
+      child_process.execFile(commandPath, cmd.args, options, onExit);
+    }
   });
 }
 
@@ -70,7 +101,7 @@ async function getCommandPath(cmd) {
 
 async function resolveCommandPath(p) {
   // Resolve any ambiguity
-  const entries = await fg([p, p + '.*']);
+  const entries = await fg([p, p + '.*'], {onlyFiles: false});
   if (entries.length === 0) {
     throw "No such command";
   } else if (entries.length > 1) {
