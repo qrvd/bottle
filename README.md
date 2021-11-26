@@ -72,7 +72,7 @@ By default, commands that you run on the command-line will behave as if your bot
 was the user that ran the command. But sometimes you may want to test them with another user,
 which can be done simply once you have the user's Discord ID.
 
-On Linux/macOS:
+#### On Linux/macOS:
 
 ```bash
 # Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
@@ -88,7 +88,7 @@ Your balance is: 1
 Your balance is: 2
 ```
 
-On Windows:
+#### On Windows:
 
 ```batch
 :: Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
