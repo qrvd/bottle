@@ -1,2 +1,3 @@
 #!/bin/sh
-exec node "$(dirname "$0")"/../index.js "$@"
+zero="$(readlink -f -- "$0")"
+exec node --unhandled-rejections=warn "$(dirname "$zero")"/../index.js "$@"
