@@ -62,7 +62,8 @@ function getCommandPath(cmd) {
 
 // todo: "parse, don't validate"
 function validateBasename(name) {
-  if (name.includes('/') || name.includes('.') || name.includes('\\')) {
+  // todo: OS-specific
+  if (['.', '..'].includes(name) || name.includes('/') || name.includes('\\')) {
     throw "Invalid command name! (Dangerous)";
   }
   // note: command names can include spaces (shop buy, shop sell, ...)
