@@ -37,22 +37,13 @@ def get_user_path(uid):
 def open_user_file(uid, mode='r'):
     return open(get_user_path(uid), mode)
 
-def init_bot(uid, tag):
-    global _bot_uid
-    bot_user = BunchDict()
-    if path.exists(get_user_path(DEFAULT_UID)):
-        b = get_user(DEFAULT_UID)
-        bot_user.update(b)
-    bot_user.id = uid
-    bot_user.tag = tag
-    bot_user.name = tag[0:tag.index('#')]
-    bot_user.me = True
-    save_user(bot_user)
-    _bot_uid = uid
-
-def init_user(uid, user):
-    user.id = uid
-    return user
+def new_user(uid, user):
+    user = {'id': uid}
+    if path.exists(get_user_path('default')):
+        defuser = get_user('default')
+        defuser.update(user)
+        user = defuser
+    return BunchDict(user)
 
 def dereference_uid(uid_ref):
     if _bot_uid and uid_ref == _bot_uid:
@@ -65,16 +56,13 @@ def get_user(uid_ref):
     upath = get_user_path(uid)
     if not path.exists(upath):
         # Construct the user if it doesn't exist
-        user = BunchDict()
-        init_user(uid, user)
+        user = new_user(uid)
         return user
     else:
         # Otherwise, load from existing data
         with open_user_file(uid) as f:
             user_dict = json.load(f)
-        user = BunchDict()
-        user.update(user_dict)
-        return user
+        return BunchDict(user_dict)
 
 def save_user(user):
     # Save the user's data as well-formatted json
@@ -97,7 +85,7 @@ def get_current_user():
     user = get_user(get_current_user_id())
     if 'tag' not in user:
         if uid == DEFAULT_UID:
-            raise RuntimeError('bot user has no tag set! (was init_bot called?)')
+            raise RuntimeError('bot user has no tag set! (was the bot user initialized?)')
         elif 'BOTTLE_USER_TAG' not in os.environ:
             raise RuntimeError('BOTTLE_USER_TAG undefined')
         else:
