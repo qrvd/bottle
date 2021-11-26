@@ -61,6 +61,9 @@ def get_user(uid_ref):
         # Otherwise, load from existing data
         with open_user_file(uid) as f:
             user_dict = json.load(f)
+        if path.exists(get_user_path('default')):
+            with open(get_user_path('default')) as f:
+                user_dict = json.load(f).update(user_dict)
         return BunchDict(user_dict)
 
 def save_user(user):
