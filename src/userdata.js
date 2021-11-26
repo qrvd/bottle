@@ -8,8 +8,6 @@ async function init(clientUser) {
     fs.mkdirSync('commands');
     fs.writeFileSync('commands/hello', 'console.log("Hello world!")\n');
   }
-  // safer than running the python code
-  // todo: keep in sync with bottle_lib.lib.init_bot
   var botUser = buildBotUser(clientUser);
   if (fs.existsSync('users/bot.json')) {
     botUser = Object.assign(

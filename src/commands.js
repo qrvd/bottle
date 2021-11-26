@@ -34,8 +34,8 @@ async function triggerCommand(msg, settings) {
 function inject(client, settings) {
   client.on('messageCreate', async (msg) => {
     if (msg.author.id === client.user.id) {
+      // Bot-command
     } else if (isCommand(msg, settings)) {
-      // todo: lock handlers so that only one per user is running at a time
       await triggerCommand(msg, settings);
     } else {
       // Non-command?
