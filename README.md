@@ -68,3 +68,38 @@ Your balance is: 0
 Your balance is: 1
 ```
 
+By default, commands that you run on the command-line will behave as if your bot
+was the user that ran the command. But sometimes you may want to test them with another user,
+which can be done simply once you have the user's Discord ID.
+
+On Linux/macOS:
+
+```bash
+# Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
+~:$ export BOTTLE_USER_ID=12345678910 
+~:$ python balance.py
+Your balance is: 0
+~:$ python balance.py
+Your balance is: 1
+
+# Return to using the bot's "user":
+~:$ export BOTTLE_USER_ID=bot
+~:$ python balance.py
+Your balance is: 2
+```
+
+On Windows:
+
+```batch
+:: Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
+~:$ set BOTTLE_USER_ID=12345678910
+~:$ python balance.py 
+Your balance is: 0
+~:$ python balance.py
+Your balance is: 1
+
+:: Return to using the bot's "user":
+~:$ set BOTTLE_USER_ID=bot
+~:$ python balance.py
+Your balance is: 2
+```
