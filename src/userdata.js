@@ -19,7 +19,7 @@ async function init(clientUser) {
 function buildBotUser(clientUser) {
   const u = clientUser;
   const botUser = {
-    me: true,
+    'self': true,
     id: u.id,
     name: u.username,
     tag: `${u.username}#${u.discriminator}`

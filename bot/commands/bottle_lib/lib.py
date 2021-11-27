@@ -73,7 +73,7 @@ def get_user(uid_ref):
 def save_user(user):
     # Save the user's data as well-formatted json
     user_dict = dict(user)
-    if 'me' in user:
+    if 'self' in user:
         oldpath = get_user_path(DEFAULT_UID)
     else:
         oldpath = get_user_path(user.id)
