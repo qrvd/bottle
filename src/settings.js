@@ -10,7 +10,11 @@ function createNewSettings() {
     prompt.start();
     const newSettings = {
       prefix: '.',
-      token: null
+      token: null,
+      'discord.js': {
+        intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"],
+        partials: ["CHANNEL"]
+      }
     };
     prompt.get(['token', 'prefix'], function (err, result) {
       if (err) return reject(err);
