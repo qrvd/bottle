@@ -1,0 +1,9 @@
+{
+  "COMMANDLINE_UID": "bot",
+  "DEFAULT_BOT_TAG": "Bottle#0000",
+  "DEFAULT_UID": "default",
+  "SAFE_WRITE_PREFIX": ".__bottle_new__",
+  "PATHS": {
+    "users": "./users"
+  }
+}

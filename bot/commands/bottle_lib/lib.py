@@ -8,22 +8,18 @@ import json
 
 # Used if no current ID was specified, and no bot ID was found.
 DEFAULT_UID = 'bot'
-_home_path = None
+_home_path = environ.get('BOTTLE_HOME_PATH') or None
 _bot_uid = None
 
 def get_home_path():
     # going up the path, find the first directory that has the file bottle.json
     global _home_path
     if _home_path is None:
-        h = environ.get('BOTTLE_HOME_PATH')
-        if h:
-            _home_path = h
-        else:
-            for curdir in enumerate_dirs(path.curdir):
-                target = path.join(curdir, 'bottle.json')
-                if path.exists(target):
-                    _home_path = curdir
-                    return curdir
+        for curdir in enumerate_dirs(path.curdir):
+            target = path.join(curdir, 'bottle.json')
+            if path.exists(target):
+                _home_path = curdir
+                return curdir
     if not _home_path:
         raise RuntimeError('No home found')
     return _home_path
@@ -77,7 +73,7 @@ def save_user(user):
         oldpath = get_user_path(DEFAULT_UID)
     else:
         oldpath = get_user_path(user.id)
-    newpath = oldpath + '.new'
+    newpath = '.__bottle_new__' oldpath + '.new'
     with open(newpath, 'w') as f:
         json.dump(user_dict, f, indent=4, sort_keys=True)
         f.write('\n')
