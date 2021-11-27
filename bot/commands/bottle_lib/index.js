@@ -46,11 +46,14 @@ function userExists(uid) {
 }
 
 function newUser(uid) {
-  var user = {id: uid};
+  const freshUser = {id: uid};
   if (userExists(DEFAULT_UID)) {
-    user = Object.assign(user, getUser(DEFAULT_UID));
+    const user = {};
+    Object.assign(user, getUser(DEFAULT_UID));
+    Object.assign(user, freshUser);
+    return user;
   }
-  return user;
+  return freshUser;
 }
 
 function dereferenceUid(uidRef) {
@@ -67,11 +70,14 @@ function getUser(uidRef) {
   }
   const userPath = getUserPath(uid);
   // Make sure new defaults are always added
-  var user = JSON.parse(fs.readFileSync(userPath));
+  const loadedUser = JSON.parse(fs.readFileSync(userPath));
   if (uid !== DEFAULT_UID && userExists(DEFAULT_UID)) {
-    user = Object.assign(user, getUser(DEFAULT_UID));
+    const user = {};
+    Object.assign(user, getUser(DEFAULT_UID));
+    Object.assign(user, loadedUser);
+    return user;
   }
-  return user;
+  return loadedUser;
 }
 
 function saveUser(user) {

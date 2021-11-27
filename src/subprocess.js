@@ -67,8 +67,11 @@ async function execCommandHelper(cmd, cmdUser) {
           } else if (!cmdline) {
             reject(new Error("command.json does not have a \"run\" field!"));
           } else {
-            child_process.exec(cmdline + ' ' + shellescape(cmd.args), 
-              Object.assign({cwd: commandPath}, options), onExit);
+            const fullCmd = cmdline + ' ' + shellescape(cmd.args);
+            const newOpts = {};
+            Object.assign(newOpts, options);
+            newOpts.cwd = commandPath;
+            child_process.exec(fullCmd, newOpts, onExit);
           }
         }
       });
