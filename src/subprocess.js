@@ -86,7 +86,7 @@ function createCommandEnv(originalEnv, cmdUser) {
   childenv.BOTTLE_USER_ID = cmdUser.id;
   childenv.BOTTLE_USER_TAG = cmdUser.tag; 
   if (isAtHome) {
-    childenv.BOTTLE_HOME_PATH = '.';
+    childenv.BOTTLE_HOME_PATH = process.cwd();
   }
   return childenv;
 }
