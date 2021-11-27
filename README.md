@@ -1,4 +1,4 @@
-## bottle - a simple discord bot library
+## bottle - a simple discord bot framework
 
 Bottle is a Discord bot library designed to make it easy for anyone to start creating Discord bots.
 Sending a message is as easy as writing a `print` statement. For example, here is the code for a command that
