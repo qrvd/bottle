@@ -48,7 +48,7 @@ finishes running.
 
 Your users' data are stored as simple JSON files, in the `users/` folder.
 Commands can bd written in any programming language, but feel free to use
-the included Python library as seen in the example commands (`bot/commands`).
+the included Python/JS libraries as seen in the example commands (`bot/commands`).
 
 It allows you to write very simple code. Here is the code for a simple "balance" command:
 
@@ -64,7 +64,7 @@ else:
 print("Your balance is: %s" % user.balance)
 ```
 
-If you use the Python library, all changes to the "user" object will be automatically saved,
+If you use the Python/NS libraries, all changes to the "user" object will be automatically saved,
 and kept for the next time the user runs any other command. That is why the above code is
 all that's needed.
 
