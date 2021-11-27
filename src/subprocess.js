@@ -76,7 +76,13 @@ async function execCommandHelper(cmd, cmdUser) {
         }
       });
     } else {
-      child_process.execFile(commandPath, cmd.args, options, onExit);
+      if (commandPath.endsWith('.js')) {
+        // make it easy to run JS code directly
+        const node = process.argv[0];
+        child_process.execFile(node, [commandPath, ...cmd.args], options, onExit);
+      } else {
+        child_process.execFile(commandPath, cmd.args, options, onExit);
+      }
     }
   });
 }
