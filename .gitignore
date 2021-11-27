@@ -4,3 +4,5 @@
 __pycache__/
 node_modules/
 bot/users/
+bottle.json
+bot.json
