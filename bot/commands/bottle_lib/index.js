@@ -70,14 +70,17 @@ function getUser(uidRef) {
   }
   const userPath = getUserPath(uid);
   // Make sure new defaults are always added
-  const loadedUser = JSON.parse(fs.readFileSync(userPath));
+  var user = JSON.parse(fs.readFileSync(userPath));
   if (uid !== DEFAULT_UID && userExists(DEFAULT_UID)) {
-    const user = {};
-    Object.assign(user, getUser(DEFAULT_UID));
-    Object.assign(user, loadedUser);
-    return user;
+    const newUser = {};
+    Object.assign(newUser, getUser(DEFAULT_UID));
+    Object.assign(newUser, user);
+    user = newUser;
   }
-  return loadedUser;
+  if (uidRef === COMMANDLINE_UID) {
+    state.botUid = user.id;
+  }
+  return user;
 }
 
 function saveUser(user) {

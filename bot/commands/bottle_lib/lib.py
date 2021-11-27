@@ -7,7 +7,8 @@ from .bunchdict import BunchDict
 import json
 
 # Used if no current ID was specified, and no bot ID was found.
-DEFAULT_UID = 'bot'
+COMMANDLINE_UID = 'bot'
+DEFAULT_UID = 'default'
 _home_path = environ.get('BOTTLE_HOME_PATH') or None
 _bot_uid = None
 
@@ -26,7 +27,7 @@ def get_home_path():
 
 def get_current_user_id():
     # todo: return the bot's id if available
-    return environ.get('BOTTLE_USER_ID') or DEFAULT_UID
+    return environ.get('BOTTLE_USER_ID') or COMMANDLINE_UID
 
 def get_user_path(uid):
     return path.join(get_home_path(), 'users', "%s.json" % uid)
@@ -36,15 +37,15 @@ def open_user_file(uid, mode='r'):
 
 def new_user(uid):
     user = {'id': uid}
-    if path.exists(get_user_path('default')):
-        dflt = dict(get_user('default'))
+    if path.exists(get_user_path(DEFAULT_UID)):
+        dflt = dict(get_user(DEFAULT_UID))
         dflt.update(user)
         user = dflt
     return BunchDict(user)
 
 def dereference_uid(uid_ref):
     if _bot_uid and uid_ref == _bot_uid:
-        return DEFAULT_UID
+        return COMMANDLINE_UID
     else:
         return uid_ref
 
@@ -59,21 +60,24 @@ def get_user(uid_ref):
         # Otherwise, load from existing data
         with open_user_file(uid) as f:
             user_dict = json.load(f)
-        if uid != 'default' and path.exists(get_user_path('default')):
-            with open(get_user_path('default')) as f:
-                dflt = dict(get_user('default'))
+        if uid != 'default' and path.exists(get_user_path(DEFAULT_UID)):
+            with open(get_user_path(DEFAULT_UID)) as f:
+                dflt = dict(get_user(DEFAULT_UID))
                 dflt.update(user_dict)
                 user_dict = dflt
+        if uid_ref == COMMANDLINE_UID:
+            global _bot_uid
+            _bot_uid = user_dict['id']
         return BunchDict(user_dict)
 
 def save_user(user):
     # Save the user's data as well-formatted json
     user_dict = dict(user)
     if 'self' in user:
-        oldpath = get_user_path(DEFAULT_UID)
+        oldpath = get_user_path(COMMANDLINE_UID)
     else:
         oldpath = get_user_path(user.id)
-    newpath = '.__bottle_new__' oldpath + '.new'
+    newpath = '.__bottle_new__' + oldpath + '.new'
     with open(newpath, 'w') as f:
         json.dump(user_dict, f, indent=4, sort_keys=True)
         f.write('\n')
@@ -86,7 +90,7 @@ def get_current_user():
     uid = get_current_user_id()
     user = get_user(get_current_user_id())
     if 'tag' not in user:
-        if uid == DEFAULT_UID:
+        if uid == COMMANDLINE_UID:
             raise RuntimeError('bot user has no tag set! (was the bot user initialized?)')
         elif 'BOTTLE_USER_TAG' not in os.environ:
             raise RuntimeError('BOTTLE_USER_TAG undefined')
