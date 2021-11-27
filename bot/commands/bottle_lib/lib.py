@@ -77,7 +77,9 @@ def save_user(user):
         oldpath = get_user_path(COMMANDLINE_UID)
     else:
         oldpath = get_user_path(user.id)
-    newpath = '.__bottle_new__' + oldpath + '.new'
+    newpath = path.join(
+        path.dirname(oldpath), '.__bottle_new__' + path.basename(oldpath) + '.new'
+    )
     with open(newpath, 'w') as f:
         json.dump(user_dict, f, indent=4, sort_keys=True)
         f.write('\n')
