@@ -14,6 +14,9 @@ from bottle import user
 print("Hello, " + user.name + "!")
 ```
 
+Commands can be written in any language - simply put the executable in the `bot/commands` folder.
+But we currently only have libraries to make it easier to write bots in JavaScript and Python.
+
 ### Quick-start
 
 1. Clone the repository:
