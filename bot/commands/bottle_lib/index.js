@@ -82,7 +82,7 @@ function getUser(uidRef) {
 
 function saveUser(user) {
   const destination = getUserPath(!!user['self'] ? COMMANDLINE_UID : user.id);
-  safeWrite(destination, JSON.dump(user, null, 4));
+  safeWrite(destination, JSON.stringify(user, null, 4));
 }
 
 function safeWrite(destination, contents) {
