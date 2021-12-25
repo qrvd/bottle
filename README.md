@@ -67,7 +67,7 @@ else:
 print("Your balance is: %s" % user.balance)
 ```
 
-If you use the Python/NS libraries, all changes to the "user" object will be automatically saved,
+If you use the Python/JavaScript libraries, all changes to the "user" object will be automatically saved,
 and kept for the next time the user runs any other command. That is why the above code is
 all that's needed.
 
