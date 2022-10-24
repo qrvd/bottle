@@ -93,13 +93,13 @@ which can be done simply once you have the user's Discord ID.
 
 ```bash
 # Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
-~:$ export BOTTLE_USER_ID=12345678910 
-~:$ python balance.py
+$ export BOTTLE_USER_ID=12345678910 
+$ python balance.py
 Your balance is: 0
 
 # Return to using the bot's "user":
-~:$ export BOTTLE_USER_ID=bot
-~:$ python balance.py
+$ export BOTTLE_USER_ID=bot
+$ python balance.py
 Your balance is: 2
 ```
 
@@ -107,12 +107,12 @@ Your balance is: 2
 
 ```batch
 :: Tell Bottle to run commands from the command-line as if the user "12345678910" ran them.
-~:$ set BOTTLE_USER_ID=12345678910
-~:$ python balance.py 
+> set BOTTLE_USER_ID=12345678910
+> python balance.py 
 Your balance is: 0
 
 :: Return to using the bot's "user":
-~:$ set BOTTLE_USER_ID=bot
-~:$ python balance.py
+> set BOTTLE_USER_ID=bot
+> python balance.py
 Your balance is: 2
 ```
